@@ -1,0 +1,15 @@
+{
+  "name": "keypress-counter",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.3.4"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.9"
+  }
+}
