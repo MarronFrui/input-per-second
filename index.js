@@ -39,9 +39,7 @@ document.addEventListener("keydown", (e) => {
     pressCount = 0;
     counter.textContent = `Total : 0`;
     frequency.textContent = `Input par seconde : 0`;
-    maxRate.textContent = `IPS max : 0`;
     timestamps = [];
-    maxIPS = 0;
     return;
   }
 
