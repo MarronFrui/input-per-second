@@ -1,18 +1,15 @@
-const app = document.getElementById("app");
+const counter = document.querySelector("#counter");
+const frequency = document.querySelector("#rate");
+const maxRate = document.querySelector("#max-rate");
+const selectedKeyElement = document.querySelector("#selected-key");
+const resetButton = document.querySelector("#reset");
 
+const maxSamples = 10;
+let timestamps = [];
+let maxIPS = 0;
 let selectedKey = null;
 let pressCount = 0;
 let currentPressedKey = null;
-
-const counter = document.getElementById("counter");
-const frequency = document.getElementById("rate");
-const maxRate = document.getElementById("max-rate");
-const selectedKeyElement = document.getElementById("selected-key");
-const resetButton = document.getElementById("reset");
-
-let timestamps = [];
-const maxSamples = 10;
-let maxIPS = 0;
 
 resetButton.addEventListener("click", () => {
   pressCount = 0;
