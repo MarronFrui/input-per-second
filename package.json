@@ -8,8 +8,5 @@
   },
   "devDependencies": {
     "vite": "^6.3.4"
-  },
-  "dependencies": {
-    "chart.js": "^4.4.9"
   }
 }
