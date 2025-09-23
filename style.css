@@ -16,3 +16,32 @@ main {
     margin: 0;
   }
 }
+
+.keyboard {
+  display: inline-block;
+  margin-top: 20px;
+  user-select: none;
+}
+
+.row {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.key {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin: 2px;
+  min-width: 40px;
+  text-align: center;
+  font-family: monospace;
+  background: #f4f4f4;
+  transition: background 0.1s ease;
+}
+
+.key.active {
+  background: #4caf50;
+  color: white;
+  box-shadow: 0 0 5px #4caf50;
+}
