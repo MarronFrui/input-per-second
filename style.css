@@ -20,28 +20,36 @@ main {
 .keyboard {
   display: inline-block;
   margin-top: 20px;
-  user-select: none;
-}
-
-.row {
-  display: flex;
-  margin-bottom: 5px;
 }
 
 .key {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  margin: 2px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 10px 14px;
-  margin: 2px;
   min-width: 40px;
   text-align: center;
-  font-family: monospace;
-  background: #f4f4f4;
-  transition: background 0.1s ease;
+  background: #eee;
+  user-select: none;
 }
 
 .key.active {
   background: #4caf50;
   color: white;
-  box-shadow: 0 0 5px #4caf50;
+}
+
+.key[data-code="Space"] {
+  min-width: 200px;
+}
+
+.key[data-code="ShiftLeft"],
+.key[data-code="ShiftRight"],
+.key[data-code="Enter"],
+.key[data-code="Backspace"],
+.key[data-code="Tab"],
+.key[data-code="CapsLock"] {
+  min-width: 80px;
 }

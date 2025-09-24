@@ -3,76 +3,37 @@ const frequency = document.querySelector("#rate");
 const maxRate = document.querySelector("#max-rate");
 const selectedKeyElement = document.querySelector("#selected-key");
 const resetButton = document.querySelector("#reset");
-
 const maxSamples = 10;
-const specialRows = [
-  [
-    { code: "Escape", label: "Esc" },
-    { code: "F1", label: "F1" },
-    { code: "F2", label: "F2" },
-    { code: "F3", label: "F3" },
-    { code: "F4", label: "F4" },
-  ],
-  [
-    { code: "Tab", label: "Tab" },
-    { code: "Backspace", label: "Backspace" }
-  ],
-  [
-    { code: "CapsLock", label: "Caps" },
-    { code: "Enter", label: "Enter" }
-  ],
-  [
-    { code: "ShiftLeft", label: "Shift" },
-    { code: "ShiftRight", label: "Shift" }
-  ],
-  [
-    { code: "ControlLeft", label: "Ctrl" },
-    { code: "AltLeft", label: "Alt" },
-    { code: "Space", label: "Space" },
-    { code: "AltRight", label: "Alt" },
-    { code: "ControlRight", label: "Ctrl" }
-  ]
+const layout = [
+  "` 1 2 3 4 5 6 7 8 9 0 - = {backspace}",
+  "{tab} q w e r t y u i o p [ ] {enter}",
+  "{capslock} a s d f g h j k l ; '",
+  "{shiftleft} z x c v b n m , . / {shiftright}",
+  "{ctrlleft} {altleft} {space} {altright} {ctrlright}"
 ];
+const specialKeyMap = {
+  "{backspace}": { code: "Backspace", label: "Backspace" },
+  "{tab}": { code: "Tab", label: "Tab" },
+  "{capslock}": { code: "CapsLock", label: "Caps" },
+  "{enter}": { code: "Enter", label: "Enter" },
+  "{shiftleft}": { code: "ShiftLeft", label: "Shift" },
+  "{shiftright}": { code: "ShiftRight", label: "Shift" },
+  "{ctrlleft}": { code: "ControlLeft", label: "Ctrl" },
+  "{ctrlright}": { code: "ControlRight", label: "Ctrl" },
+  "{altleft}": { code: "AltLeft", label: "Alt" },
+  "{altright}": { code: "AltRight", label: "Alt" },
+  "{space}": { code: "Space", label: "Space" }
+};
+
 let timestamps = [];
 let maxIPS = 0;
 let selectedKey = null;
 let pressCount = 0;
 let currentPressedKey = null;
 
-// Array containing numbers
-function makeDigits() {
-  return Array.from({ length: 10 }, (_, i) => ({
-    code: `Digit${i}`,
-    label: i.toString()
-  }));
-}
-
-// Array containing letters
-function makeLetters(start, end, labelCase = "upper") {
-  let debut = start.toUpperCase().charCodeAt(0);
-  let fin = end.toUpperCase().charCodeAt(0);
-  if (debut > fin) [debut, fin] = [fin, debut];
-
-  return Array.from({ length: fin - debut + 1 }, (_, i) => {
-    const ch = String.fromCharCode(debut + i);    // 'A'..'Z'
-    const label = labelCase === "lower" ? ch.toLowerCase() : ch;
-    return { code: `Key${ch}`, label };
-  });
-}
-
-resetButton.addEventListener("click", () => {
-  pressCount = 0;
-  counter.textContent = `Frappes : 0`;
-  frequency.textContent = `IPS : 0`;
-  maxRate.textContent = `IPS max : 0`;
-  selectedKey = null;
-  selectedKeyElement.textContent = `Tu pètes le : Aucune`;
-  timestamps = [];
-  maxIPS = 0;
-});
-
 document.addEventListener("keydown", (e) => {
-  const keyDiv = document.querySelector(`.key[data-code="${event.code}"]`);
+  const keyDiv = document.querySelector(`.key[data-code="${e.code}"]`);
+  e.preventDefault();
   if (keyDiv) keyDiv.classList.add("active");
 
   if (e.key === "Alt" || e.key === "AltRight" || e.key === "AltGraph") {
@@ -118,12 +79,45 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-  const keyDiv = document.querySelector(`.key[data-code="${event.code}"]`);
+  const keyDiv = document.querySelector(`.key[data-code="${e.code}"]`);
   if (keyDiv) keyDiv.classList.remove("active");
+
   if (e.key === currentPressedKey) {
     currentPressedKey = null;
   }
 });
+
+resetButton.addEventListener("click", () => {
+  pressCount = 0;
+  counter.textContent = `Frappes : 0`;
+  frequency.textContent = `IPS : 0`;
+  maxRate.textContent = `IPS max : 0`;
+  selectedKey = null;
+  selectedKeyElement.textContent = `Tu pètes le : Aucune`;
+  timestamps = [];
+  maxIPS = 0;
+});
+
+// Array containing numbers
+function makeDigits() {
+  return Array.from({ length: 10 }, (_, i) => ({
+    code: `Digit${i}`,
+    label: i.toString()
+  }));
+}
+
+// Array containing letters
+function makeLetters(start, end, labelCase = "upper") {
+  let firstChar = start.toUpperCase().charCodeAt(0);
+  let lastChar = end.toUpperCase().charCodeAt(0);
+  if (firstChar > lastChar) [firstChar, lastChar] = [lastChar, firstChar];
+
+  return Array.from({ length: lastChar - firstChar + 1 }, (_, i) => {
+    const ch = String.fromCharCode(firstChar + i);    // 'A'..'Z'
+    const label = labelCase === "lower" ? ch.toLowerCase() : ch;
+    return { code: `Key${ch}`, label };
+  });
+}
 
 function calculateFrequency(timestamps) {
   let delta = 0;
@@ -135,27 +129,38 @@ function calculateFrequency(timestamps) {
 }
 
 // Everything related to keyboard display
-const keyboardContainer = document.getElementById("keyboard");
-const topRow = specialRows[0];
-const digitRow = [...makeDigits(), specialRows[1][1]]; // 0-9 + Backspace
-const rowQtoP = [specialRows[1][0], ...makeLetters("Q", "P"), specialRows[2][1]]; // Tab + Q-P + Enter
-const rowAtoL = [specialRows[2][0], ...makeLetters("A", "L")]; // CapsLock + A-L
-const rowZtoM = [specialRows[3][0], ...makeLetters("Z", "M"), specialRows[3][1]]; // Shift + Z-M + Shift
-const bottomRow = specialRows[4];
-const keyboardLayout = [topRow, digitRow, rowQtoP, rowAtoL, rowZtoM, bottomRow];
 
-// Generate the keyboard DOM
-keyboardLayout.forEach((row) => {
-  const rowDiv = document.createElement("div");
-  rowDiv.className = "row";
+function renderKeyboard(layout) {
+  layout.forEach(row => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "row";
 
-  row.forEach((key) => {
-    const keyDiv = document.createElement("div");
-    keyDiv.className = "key";
-    keyDiv.dataset.code = key.code;
-    keyDiv.textContent = key.label;
-    rowDiv.appendChild(keyDiv);
+    const tokens = row.split(" ");
+    tokens.forEach(token => {
+      let keyDef;
+
+      if (specialKeyMap[token]) {
+        // Special key from dictionary
+        keyDef = specialKeyMap[token];
+      } else {
+        // Normal character
+        const label = token;
+        const code = token.length === 1 && /[a-z]/i.test(token)
+          ? `Key${label.toUpperCase()}`
+          : `Digit${label}`;
+        keyDef = { code, label };
+      }
+
+      const keyDiv = document.createElement("div");
+      keyDiv.className = "key";
+      keyDiv.dataset.code = keyDef.code;
+      keyDiv.textContent = keyDef.label;
+
+      rowDiv.appendChild(keyDiv);
+    });
+
+    keyboardContainer.appendChild(rowDiv);
   });
+}
 
-  keyboardContainer.appendChild(rowDiv);
-});
+renderKeyboard(layout);
